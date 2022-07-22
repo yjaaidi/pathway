@@ -17,6 +17,11 @@ def main():
 
     cwd = getcwd()
     camera = cv2.VideoCapture(0)
+
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+
+    fps = round(camera.get(cv2.CAP_PROP_FPS))
     width = round(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = round(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -32,8 +37,8 @@ def main():
     detector.detectObjectsFromVideo(
         camera_input=camera,
         output_file_path=output_file_path,
-        frame_detection_interval=10,
-        frames_per_second=30,
+        frame_detection_interval=round(fps / 2),
+        frames_per_second=fps,
         minimum_percentage_probability=60,
         per_frame_function=lambda frame_number, output_array, output_count: processor.process_frame(
             output_array),
