@@ -15,7 +15,7 @@ def test_compute_position(box_points, expected_position):
     position = calculator.compute_position(box_points=box_points)
     # assert position.x == expected_position.x
     assert position.width == expected_position.width
-    # assert position.height == expected_position.height
+    assert position.height == expected_position.height
 
 
 def create_position_calculator():
