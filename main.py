@@ -5,17 +5,22 @@ from os import environ, getcwd
 from os.path import join
 from signal import SIGINT, signal
 from tempfile import mkdtemp
+from typing import List, TypedDict
 
 import cv2
 from imageai.Detection import VideoObjectDetection
 
+from position_calculator import PositionCalculator
+
 
 def main():
+
     cwd = getcwd()
     camera = cv2.VideoCapture(0)
-    width = camera.get(cv2.CAP_PROP_FRAME_WIDTH)
-    height = camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    print("{} {}".format(width, height))
+    width = round(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = round(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    processor = DetectionProcessor(width=width, height=height)
 
     detector = VideoObjectDetection()
     detector.setModelTypeAsYOLOv3()
@@ -30,28 +35,30 @@ def main():
         frame_detection_interval=10,
         frames_per_second=30,
         minimum_percentage_probability=60,
-        per_frame_function=frame_callback
+        per_frame_function=lambda frame_number, output_array, output_count: processor.process_frame(
+            output_array),
     )
 
 
-def frame_callback(frame_number, output_array, output_count):
-    print("Processing frame {}".format(frame_number))
-    print(output_count)
-    people = filter(lambda item: item['name'] == "person", output_array)
-    positions = map(lambda item: get_position(item['box_points']), people)
-    print(list(positions))
+class Item(TypedDict):
+    name: str
+    percentage_probability: float
+    box_points: tuple[int, int, int, int]
 
 
 @dataclass
-class Position:
-    x: int
-    height: int
-    width: int
+class DetectionProcessor:
+    _position_calculator: PositionCalculator
 
+    def __init__(self, width: int, height: int):
+        self._position_calculator = PositionCalculator(
+            width=width, height=height)
 
-def get_position(box_points: tuple[int, int, int, int]) -> Position:
-    x1, y1, x2, y2 = box_points
-    return Position(x=(x1 + x2)/2, height=y2 - y1, width=x2 - x1)
+    def process_frame(self, items: List[Item]):
+        people = filter(lambda item: item['name'] == "person", items)
+        positions = map(lambda item: self._position_calculator.compute_position(
+            box_points=item['box_points']), people)
+        print(list(positions))
 
 
 if __name__ == '__main__':
