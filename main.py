@@ -32,7 +32,7 @@ def main():
     detector.setModelPath(join(cwd, "models", "yolo.h5"))
     detector.loadModel(detection_speed="flash")
 
-    output_file_path = join(mkdtemp(), "camera_detected_video.avi")
+    output_file_path = join(cwd, "dist", "video")
 
     detector.detectObjectsFromVideo(
         camera_input=camera,
