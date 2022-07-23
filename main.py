@@ -34,11 +34,13 @@ def main():
 
     output_file_path = join(cwd, "dist", "video")
 
+    detection_fps = 2
+
     detector.detectObjectsFromVideo(
         camera_input=camera,
         output_file_path=output_file_path,
-        frame_detection_interval=round(fps / 2),
-        frames_per_second=fps,
+        frame_detection_interval=round(fps / detection_fps),
+        frames_per_second=detection_fps,
         minimum_percentage_probability=60,
         per_frame_function=lambda frame_number, output_array, output_count: processor.process_frame(
             output_array),
