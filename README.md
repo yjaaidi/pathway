@@ -6,7 +6,7 @@ conda create -n pathway -f environment.yml
 ./main.py
 ```
 
-# Update environment.yml
+# Update environment.yml (or use ./install.sh)
 
 ```sh
 conda env export -n pathway > environment.yml

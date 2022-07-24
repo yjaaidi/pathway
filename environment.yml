@@ -105,6 +105,8 @@ dependencies:
   - matplotlib-base=3.5.1=py310hfc59cd6_0
   - multidict=6.0.2=py310h1961e1f_1
   - munkres=1.1.4=pyh9f0ad1d_0
+  - mypy=0.961=py310h6c45266_0
+  - mypy_extensions=0.4.3=py310h2ec42d9_5
   - ncurses=6.3=hca72f7f_3
   - nettle=3.6=hedd7734_0
   - numpy=1.22.2=py310hfbbbacf_0
@@ -121,6 +123,7 @@ dependencies:
   - pixman=0.40.0=hbcb3906_0
   - pluggy=1.0.0=py310hecd8cb5_1
   - protobuf=3.19.4=py310hba3363e_0
+  - psutil=5.9.1=py310h6c45266_0
   - pthread-stubs=0.4=hc929b4f_1001
   - py=1.11.0=pyhd3eb1b0_0
   - py-opencv=4.5.5=py31ha188af9_2
@@ -144,6 +147,7 @@ dependencies:
   - requests=2.28.1=pyhd8ed1ab_0
   - requests-oauthlib=1.3.1=pyhd8ed1ab_0
   - rsa=4.9=pyhd8ed1ab_0
+  - rx=3.2.0=pyhd8ed1ab_0
   - scikit-learn=1.0.2=py310h598de7d_0
   - scipy=1.8.0=py310h47774c9_1
   - setuptools=61.2.0=py310hecd8cb5_0
