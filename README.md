@@ -1,21 +1,21 @@
 # Setup
 
 ```sh
-conda create -n pathway -f environment.yml
-./download-models.sh
-./main.py
+make install
+make download-models
+make start
 ```
 
 # Adding dependencies
 
 ```sh
-./install.sh [dependency ...] 
+tools/install.sh [dependency ...] 
 ```
 
 # Set up raspberry
 
 ```sh
-./setup-raspberry.sh
+make setup-raspberry
 ```
 
 # Connect to Raspberry
