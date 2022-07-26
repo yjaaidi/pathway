@@ -291,7 +291,7 @@ class ObjectDetection:
                     detected_copy = preprocess_input(detected_copy, self.__yolo_model_image_size)
 
                     model = self.__model_collection[0]
-                    yolo_result = model.predict(detected_copy)
+                    yolo_result = model.predict(detected_copy, verbose=False)
 
                     model_detections = retrieve_yolo_detections(yolo_result,
                             self.__yolo_anchors,
