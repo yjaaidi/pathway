@@ -11,6 +11,7 @@ from rx.operators import buffer_with_time
 from rx.operators import map as rx_map
 from rx.operators import share
 from rx.subject import Subject
+from pathway.camera.get_camera import get_camera
 from pathway.camera.opencv_camera import OpencvCamera
 from pathway.camera.picamera import Picamera
 
@@ -25,10 +26,7 @@ def main():
     width = 640
     height = 480
 
-    try:
-        camera = Picamera.create(width=width, height=height)
-    except:
-        camera = OpencvCamera.create(width=width, height=height)
+    camera = get_camera(width=width, height=height)
 
     processor = DetectionProcessor(width=width, height=height)
 
