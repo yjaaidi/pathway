@@ -12,12 +12,12 @@ echo "<service-group>
   </service>
 </service-group>" | sudo tee /etc/avahi/services/ssh.service
 
-echo "Installing miniconda"
-wget https://github.com/conda-forge/miniforge/releases/download/4.13.0-0/Miniforge3-4.13.0-0-Linux-aarch64.sh -O install-miniforge.sh
-chmod u+x install-miniforge.sh
-./install-miniforge.sh
-miniforge3/bin/conda init bash
-source ~/.bashrc
+echo "Installing Python 3"
+sudo apt-get install python3-pip
+
+echo "Setup poetry"
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+poetry config virtualenvs.in-project true
 
 echo "Installing git"
 sudo apt-get install -y git
@@ -31,12 +31,5 @@ cd pathway
 echo "Pathway > Installing"
 make install
 
-# echo "Installing Python 3"
-# sudo apt-get install python3-pip
-
-# sudo reboot
-
-# Fixes numpy install
-# apt-get install libatlas-base-dev
-
-# pip install -r requirements-src.txt
+echo "Reboot"
+sudo reboot
