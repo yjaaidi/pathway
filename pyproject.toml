@@ -20,10 +20,11 @@ keras-resnet = "^0.2.0"
 matplotlib = "^3.5.2"
 numpy = "^1.23.1"
 opencv-python = "^4.6.0"
-picamera = {version = "^1.13", optional = true}
 scipy = "^1.8.1"
-tensorflow = {version = "^2.9.1", optional = true}
-tensorflow-aarch64 = {version = "^2.9.1", optional = true}
+tensorflow = {version = "^2.9.1", markers = "platform_machine != 'aarch64'"}
+
+picamera = {version = "^1.13", markers = "platform_machine == 'aarch64'"}
+tflite-runtime = {version = "^2.9.1", markers = "platform_machine == 'aarch64'"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
