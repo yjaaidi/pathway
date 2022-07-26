@@ -17,6 +17,7 @@ sudo apt-get install -y python3-pip
 
 echo "Setup poetry"
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+source ~/.bashrc
 poetry config virtualenvs.in-project true
 
 echo "Installing git"
