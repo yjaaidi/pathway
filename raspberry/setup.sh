@@ -36,5 +36,8 @@ cd pathway
 echo "Pathway > Installing"
 make install
 
+echo "Pathway > Downloading models"
+make download-models
+
 echo "Reboot"
 sudo reboot
