@@ -11,6 +11,8 @@ from rx.operators import buffer_with_time
 from rx.operators import map as rx_map
 from rx.operators import share
 from rx.subject import Subject
+from pathway.camera.opencv_camera import OpencvCamera
+from pathway.camera.picamera import Picamera
 
 from pathway.imageai.detection import ObjectDetection
 from pathway.position_calculator import Position, PositionCalculator
@@ -19,13 +21,14 @@ from pathway.position_calculator import Position, PositionCalculator
 def main():
 
     cwd = getcwd()
-    camera = cv2.VideoCapture(0)
 
-    camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+    width = 640
+    height = 480
 
-    width = round(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = round(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    try:
+        camera = Picamera.create(width=width, height=height)
+    except:
+        camera = OpencvCamera.create(width=width, height=height)
 
     processor = DetectionProcessor(width=width, height=height)
 
@@ -37,9 +40,7 @@ def main():
     processor.init()
 
     while True:
-        ret, frame = camera.read()
-        if not ret:
-            raise Exception("Could not read frame")
+        frame = camera.read_image()
         
         cv2.imwrite("dist/last-image.jpg", frame)
 
