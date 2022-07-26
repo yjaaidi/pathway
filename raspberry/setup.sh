@@ -13,7 +13,7 @@ echo "<service-group>
 </service-group>" | sudo tee /etc/avahi/services/ssh.service
 
 echo "Installing Python 3"
-sudo apt-get install python3-pip
+sudo apt-get install -y python3-pip
 
 echo "Setup poetry"
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
