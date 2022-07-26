@@ -15,5 +15,4 @@ test:
 	poetry run pytest
 
 test-watch:
-	ptw
-
+	poetry run ptw
