@@ -12,10 +12,10 @@ setup-raspberry:
 	ssh pi@raspberrypi.local 'bash setup.sh -b'
 
 start:
-	./main.py
+	poetry run start
 
 test:
-	pytest
+	poetry run pytest
 
 test-watch:
 	ptw

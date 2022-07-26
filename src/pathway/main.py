@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 
-import itertools
 from os import getcwd
 from os.path import join
 from typing import List, TypedDict
 
 import cv2  # type: ignore
-from imageai.Detection import ObjectDetection  # type: ignore
-
-from rx.core.typing import Observable, Subject as SubjectType
-from rx.operators import buffer_with_time, map as rx_map, share
+from rx.core.typing import Observable
+from rx.core.typing import Subject as SubjectType
+from rx.operators import buffer_with_time
+from rx.operators import map as rx_map
+from rx.operators import share
 from rx.subject import Subject
 
-from position_calculator import Position, PositionCalculator
+from pathway.imageai.detection import ObjectDetection
+from pathway.position_calculator import Position, PositionCalculator
 
 
 def main():
