@@ -15,7 +15,11 @@ echo "<service-group>
 echo "Installing Python 3"
 sudo apt-get install -y python3-pip
 
-echo "Setup poetry"
+echo "Installing required libraries"
+# Fixes missing libGL.so.1
+sudo apt install -y libgl1-mesa-glx
+
+echo "Setting up poetry"
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 source ~/.bashrc
 poetry config virtualenvs.in-project true
