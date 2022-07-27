@@ -28,10 +28,10 @@ NOGUI=1 pip3 install git+https://github.com/raspberrypi/picamera2.git
 # in order to use virtualenvs.options.system-site-packages
 # that is why we are hacking our way and forcing system import.
 echo "Setting PYTHONPATH to include picamera2"
-echo 'export PYTHONPATH=/home/pi/.local/lib/python3.9/site-packages:$PYTHONPATH' >> ~/.bashrc
+echo 'export PYTHONPATH=$PYTHONPATH:/home/pi/.local/lib/python3.9/site-packages:/usr/lib/python3/dist-packages' >> ~/.bashrc
 
-echo "Installing pip & venv"
-sudo apt-get install -y python3-pip python3-venv
+echo "Installing pip"
+sudo apt-get install -y python3-pip
 
 echo "Setting up poetry"
 curl -sSL https://install.python-poetry.org | python -
