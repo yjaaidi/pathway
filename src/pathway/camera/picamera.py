@@ -21,8 +21,7 @@ class Picamera(Camera):
     self._picam2 = __import__("picamera2").Picamera2()
   
   def read_image(self):
-    with self._picamera_module.Picamera2() as camera:
-      return camera.capture_array()
+    return self._picam2.capture_array()
   
   def start(self):
     config = self._picam2.create_still_configuration({'size': [self.width, self.height]})
