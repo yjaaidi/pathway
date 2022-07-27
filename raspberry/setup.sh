@@ -12,17 +12,30 @@ echo "<service-group>
   </service>
 </service-group>" | sudo tee /etc/avahi/services/ssh.service
 
-echo "Installing Python 3"
-sudo apt-get install -y python3-pip
+echo "APT Update"
+sudo apt-get update
 
 echo "Installing required libraries"
 # Fixes missing libGL.so.1
 sudo apt install -y libgl1-mesa-glx
 
+echo "Installing picamera2 dependencies"
+sudo apt install -y python3-libcamera python3-kms++
+sudo apt install -y python3-prctl libatlas-base-dev ffmpeg libopenjp2-7
+NOGUI=1 pip3 install git+https://github.com/raspberrypi/picamera2.git
+
+# Poetry 1.2.0a install didn't work
+# in order to use virtualenvs.options.system-site-packages
+# that is why we are hacking our way and forcing system import.
+echo "Setting PYTHONPATH to include picamera2"
+echo 'export PYTHONPATH=/home/pi/.local/lib/python3.9/site-packages:$PYTHONPATH' >> ~/.bashrc
+
+echo "Installing pip & venv"
+sudo apt-get install -y python3-pip python3-venv
+
 echo "Setting up poetry"
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python -
 source ~/.bashrc
-poetry config virtualenvs.in-project true
 
 echo "Installing git"
 sudo apt-get install -y git

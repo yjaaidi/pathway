@@ -26,8 +26,6 @@ def main():
     width = 640
     height = 480
 
-    camera = get_camera(width=width, height=height)
-
     processor = DetectionProcessor(width=width, height=height)
 
     detector = ObjectDetection()
@@ -37,18 +35,19 @@ def main():
 
     processor.init()
 
-    while True:
-        frame = camera.read_image()
-        
-        cv2.imwrite("dist/last-image.jpg", frame)
+    with get_camera(width=width, height=height) as camera:
+        while True:
+            frame = camera.read_image()
+            
+            cv2.imwrite("dist/last-image.jpg", frame)
 
-        _, detected_items = detector.detectObjectsFromImage(
-            input_image=frame,
-            input_type="array",
-            output_type="array",
-            minimum_percentage_probability=40,
-        )
-        processor.process_detected_items(detected_items)
+            _, detected_items = detector.detectObjectsFromImage(
+                input_image=frame,
+                input_type="array",
+                output_type="array",
+                minimum_percentage_probability=40,
+            )
+            processor.process_detected_items(detected_items)
 
 
 class DetectedItem(TypedDict):

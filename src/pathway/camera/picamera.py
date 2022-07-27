@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from pathway.camera.camera import Camera
 
@@ -19,11 +18,16 @@ class Picamera(Camera):
   def __init__(self, width: int, height: int):
     self.width = width
     self.height = height
-    self._picamera_module = __import__("picamera")
+    self._picam2 = __import__("picamera2").Picamera2()
   
   def read_image(self):
-    with self._picamera_module.PiCamera() as camera:
-      with self._picamera_module.array.PiRGBArray(camera) as output:
-        camera.resolution = (self.width, self.height)
-        camera.capture(output, 'rgb')
-        return output.array
+    with self._picamera_module.Picamera2() as camera:
+      return camera.capture_array()
+  
+  def start(self):
+    config = self._picam2.create_still_configuration({'size': [self.width, self.height]})
+    self._picam2.configure(config)
+    self._picam2.start()
+  
+  def stop(self):
+    self._picam2.stop()
