@@ -20,8 +20,15 @@ class DetectedObject:
 
 
 class ObjectDetector:
+    _detector: ImageAiObjectDetection
     _width = 640
     _height = 480
+
+    def __init__(self):
+        self._detector = ImageAiObjectDetection()
+        self._detector.setModelTypeAsYOLOv3()
+        self._detector.setModelPath(join(getcwd(), "models", "yolo.h5"))
+        self._detector.loadModel(detection_speed="flash")
 
     def detect_objects(self, picture_data: bytes, filtered_types: List[str] = None) -> List[DetectedObject]:
         """
@@ -32,15 +39,10 @@ class ObjectDetector:
         :param picture_data: 640x480 JPEG raw data
 
         :return: List of detected objects"""
-
-        detector = ImageAiObjectDetection()
-        detector.setModelTypeAsYOLOv3()
-        detector.setModelPath(join(getcwd(), "models", "yolo.h5"))
-        detector.loadModel(detection_speed="flash")
         picture = Image.open(io.BytesIO(picture_data))
         picture_array = numpy.asarray(picture)
 
-        detected_items: List[DetectedItem] = detector.detectObjectsFromImage(
+        detected_items: List[DetectedItem] = self._detector.detectObjectsFromImage(
             input_image=picture_array,
             input_type="array",
             output_type="array",
