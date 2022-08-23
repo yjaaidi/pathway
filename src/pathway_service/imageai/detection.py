@@ -11,8 +11,8 @@ from tensorflow.keras.layers import Input
 from PIL import Image
 import warnings
 
-from pathway.imageai.yolo import tiny_yolov3_main, yolov3_main
-from pathway.imageai.yolo_utils import letterbox_image, yolo_eval, preprocess_input, retrieve_yolo_detections, draw_boxes
+from pathway_service.imageai.yolo import tiny_yolov3_main, yolov3_main
+from pathway_service.imageai.yolo_utils import letterbox_image, yolo_eval, preprocess_input, retrieve_yolo_detections, draw_boxes
 
 
 

@@ -8,7 +8,7 @@ packages = [
 ]
 
 [tool.poetry.scripts]
-start = "pathway.main:main"
+start = "pathway_service.main:start"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
@@ -23,6 +23,9 @@ opencv-python = "^4.6.0"
 scipy = "^1.8.1"
 tensorflow = {version = "^2.9.1", markers = "platform_machine != 'aarch64'"}
 tensorflow-aarch64 = {version = "^2.9.1", markers = "platform_machine == 'aarch64'"}
+fastapi = "^0.80.0"
+python-multipart = "^0.0.5"
+uvicorn = "^0.18.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

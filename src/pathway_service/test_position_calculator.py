@@ -1,5 +1,5 @@
 import pytest
-from pathway.position_calculator import Position, PositionCalculator
+from pathway_service.position_calculator import Position, PositionCalculator
 
 
 @pytest.mark.parametrize("box_points,expected_position", [
