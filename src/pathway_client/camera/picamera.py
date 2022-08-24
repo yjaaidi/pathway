@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from pathway.camera.camera import Camera
+from pathway_client.camera.camera import Camera
 
 
 @dataclass

@@ -1,5 +1,5 @@
-from pathway.camera.opencv_camera import OpencvCamera
-from pathway.camera.picamera import Picamera
+from pathway_client.camera.opencv_camera import OpencvCamera
+from pathway_client.camera.picamera import Picamera
 
 
 def get_camera(width: int, height: int):
