@@ -1,8 +1,11 @@
 download-models:
 	tools/download-models.sh
 
-install:
-	poetry install
+install-client:
+	poetry install --extras client
+
+install-service:
+  poetry install --extras service
 
 setup-raspberry:
 	scp raspberry/setup.sh pi@raspberrypi.local:.

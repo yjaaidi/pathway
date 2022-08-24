@@ -76,16 +76,3 @@ class DetectionProcessor:
 
 if __name__ == '__main__':
     start()
-
-# +import board
-# +import neopixel
-# +        poss= list(positions)
-# +        l = 150
-# +        pixels = neopixel.NeoPixel(board.D18, l, auto_write=False)
-# +        for i in range(l): pixels[i] = (255,0,0)
-# +        pixels.show()
-# +        for pos in poss:
-# +            pixels = neopixel.NeoPixel(board.D18, l, auto_write=False)
-# +            for i in range(l): pixels[i] = (255,255,255)
-# +            pixels.show()
-# +        return poss

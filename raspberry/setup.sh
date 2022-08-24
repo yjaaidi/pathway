@@ -47,7 +47,7 @@ echo "Go into source code directory"
 cd pathway
 
 echo "Pathway > Installing"
-make install
+make install-client
 
 echo "Pathway > Downloading models"
 make download-models
