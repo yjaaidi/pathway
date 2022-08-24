@@ -16,20 +16,19 @@ start-service-dev = "pathway_service.main:start_dev"
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
 Pillow = "^9.2.0"
-Rx = "^3.2.0"
-h5py = "^3.7.0"
-keras = "^2.9.0"
-keras-resnet = "^0.2.0"
-matplotlib = "^3.5.2"
 numpy = "^1.23.1"
-opencv-python = "^4.6.0"
-scipy = "^1.8.1"
-tensorflow = {version = "^2.9.1", markers = "platform_machine != 'aarch64'"}
-tensorflow-aarch64 = {version = "^2.9.1", markers = "platform_machine == 'aarch64'"}
-fastapi = "^0.80.0"
-python-multipart = "^0.0.5"
-uvicorn = "^0.18.2"
-requests = "^2.28.1"
+Rx = { version = "^3.2.0", optional = true }
+fastapi = {version = "^0.80.0", optional = true}
+h5py = { version = "^3.7.0", optional = true }
+keras = { version = "^2.9.0", optional = true }
+keras-resnet = { version = "^0.2.0", optional = true }
+matplotlib = { version = "^3.5.2", optional = true }
+opencv-python = { version = "^4.6.0", optional = true }
+tensorflow = {version = "^2.9.1", markers = "platform_machine != 'aarch64'", optional = true}
+tensorflow-aarch64 = {version = "^2.9.1", markers = "platform_machine == 'aarch64'", optional = true}
+python-multipart = {version = "^0.0.5", optional = true}
+uvicorn = {version = "^0.18.2", optional = true}
+requests = {version = "^2.28.1", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
@@ -44,3 +43,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
 mypy_path = "src"
+
+[tool.poetry.extras]
+client = ["Rx", "opencv-python", "requests"]
+service = ["h5py", "fastapi", "keras", "keras-resnet", "matplotlib", "python-multipart", "tensorflow", "uvicorn"]
