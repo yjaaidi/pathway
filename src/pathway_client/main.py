@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
 import io
+import os
+import sys
 from os import getcwd
 from os.path import join
 from typing import List, TypedDict
 
 import cv2  # type: ignore
+import requests
+from numpy import ndarray
 from PIL import Image
 from rx.core.typing import Observable
 from rx.core.typing import Subject as SubjectType
@@ -15,29 +19,10 @@ from rx.operators import share
 from rx.subject import Subject
 
 from pathway_client.camera.get_camera import get_camera
-import requests
 
 
 def start():
-
-    processor = DetectionProcessor()
-
-    processor.init()
-
-    with get_camera(width=640, height=480) as camera:
-        while True:
-            frame = camera.read_image()
-
-            cv2.imwrite("dist/last-image.jpg", frame)
-
-            image = Image.fromarray(frame.astype('uint8'), 'RGB')
-            image_bytes = io.BytesIO()
-            image.save(image_bytes, format='JPEG')
-            detected_items = requests.post(
-                'http://localhost:8000/images', files={'image': image_bytes.getvalue()}
-            ).json()['items']
-
-            processor.process_detected_objects(detected_items)
+    DetectionProcessor().start()
 
 
 class DetectedItem(TypedDict):
@@ -61,13 +46,32 @@ class DetectionProcessor:
             rx_map(lambda buffer: len(buffer) / 5),
         )
 
-    def init(self):
+    def start(self):
+
         self._fps_obs.subscribe(lambda fps: print(fps), lambda err: print(err))
         self._detected_objects_obs.subscribe(
             lambda positions: print(positions))
 
-    def process_detected_objects(self, detected_objects: List[dict]):
-        self._detected_objects_subject.on_next(detected_objects)
+        api_base_url = os.environ.get('API_BASE_URL', 'http://localhost:8000')
+
+        with get_camera(width=640, height=480) as camera:
+            while True:
+                frame = camera.read_image()
+
+                cv2.imwrite("dist/last-image.jpg", frame)
+
+                image_bytes = self._frame_to_jpg(frame)
+                response = requests.post(
+                    '{api_base_url}/images'.format(api_base_url=api_base_url), files={'image': image_bytes})
+                detected_items = response.json()['items']
+
+                self._detected_objects_subject.on_next(detected_items)
+
+    def _frame_to_jpg(self, frame: ndarray) -> bytes:
+        image = Image.fromarray(frame.astype('uint8'), 'RGB')
+        image_buffer = io.BytesIO()
+        image.save(image_buffer, format='JPEG')
+        return image_buffer.getvalue()
 
 
 if __name__ == '__main__':
