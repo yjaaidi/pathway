@@ -5,7 +5,7 @@ install-client:
 	poetry install --extras client
 
 install-service:
-  poetry install --extras service
+	poetry install --extras service
 
 setup-raspberry:
 	scp raspberry/setup.sh pi@raspberrypi.local:.
