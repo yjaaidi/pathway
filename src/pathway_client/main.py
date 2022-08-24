@@ -19,6 +19,7 @@ from rx.operators import share
 from rx.subject import Subject
 
 from pathway_client.camera.get_camera import get_camera
+from pathway_service.object_detector import DetectedObject
 
 
 def start():
@@ -34,7 +35,7 @@ class DetectedItem(TypedDict):
 class DetectionProcessor:
     _fps_obs: Observable[float]
     _detected_objects_subject = Subject()
-    _detected_objects_obs: Observable[List[dict]]
+    _detected_objects_obs: Observable[List[DetectedObject]]
 
     def __init__(self):
         self._detected_objects_obs = self._detected_objects_subject.pipe(
@@ -63,9 +64,10 @@ class DetectionProcessor:
                 image_bytes = self._frame_to_jpg(frame)
                 response = requests.post(
                     '{api_base_url}/images'.format(api_base_url=api_base_url), files={'image': image_bytes})
-                detected_items = response.json()['items']
+                detected_objects = [DetectedObject(
+                    **item) for item in response.json()['items']]
 
-                self._detected_objects_subject.on_next(detected_items)
+                self._detected_objects_subject.on_next(detected_objects)
 
     def _frame_to_jpg(self, frame: ndarray) -> bytes:
         image = Image.fromarray(frame.astype('uint8'), 'RGB')
