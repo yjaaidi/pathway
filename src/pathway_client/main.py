@@ -18,7 +18,7 @@ from pathway_client.camera.get_camera import get_camera
 import requests
 
 
-def main():
+def start():
 
     processor = DetectionProcessor()
 
@@ -71,4 +71,4 @@ class DetectionProcessor:
 
 
 if __name__ == '__main__':
-    main()
+    start()

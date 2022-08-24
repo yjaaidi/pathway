@@ -8,11 +8,14 @@ setup-raspberry:
 	scp raspberry/setup.sh pi@raspberrypi.local:.
 	ssh pi@raspberrypi.local 'bash setup.sh -b'
 
-start:
-	poetry run start
+start-client:
+	poetry run start-client
 
-start-dev:
-	poetry run start-dev
+start-service:
+	poetry run start-service
+
+start-service-dev:
+	poetry run start-service-dev
 
 test:
 	poetry run pytest

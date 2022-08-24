@@ -4,12 +4,14 @@ version = "0.1.0"
 description = ""
 authors = ["Younes Jaaidi <yjaaidi@gmail.com>"]
 packages = [
-  { include = "pathway", from = "src" }
+  { include = "pathway_client", from = "src" },
+  { include = "pathway_service", from = "src" }
 ]
 
 [tool.poetry.scripts]
-start = "pathway_service.main:start"
-start-dev = "pathway_service.main:start_dev"
+start-client = "pathway_client.main:start"
+start-service = "pathway_service.main:start"
+start-service-dev = "pathway_service.main:start_dev"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
