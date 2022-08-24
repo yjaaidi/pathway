@@ -11,6 +11,9 @@ setup-raspberry:
 start:
 	poetry run start
 
+start-dev:
+	poetry run start-dev
+
 test:
 	poetry run pytest
 

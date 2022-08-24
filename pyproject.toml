@@ -9,6 +9,7 @@ packages = [
 
 [tool.poetry.scripts]
 start = "pathway_service.main:start"
+start-dev = "pathway_service.main:start_dev"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
