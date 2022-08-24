@@ -2,14 +2,12 @@
 
 import io
 import os
-import sys
-from os import getcwd
-from os.path import join
 from typing import List, TypedDict
 
 import cv2  # type: ignore
 import requests
 from numpy import ndarray
+from pathway_service.object_detector import DetectedObject
 from PIL import Image
 from rx.core.typing import Observable
 from rx.core.typing import Subject as SubjectType
@@ -19,7 +17,6 @@ from rx.operators import share
 from rx.subject import Subject
 
 from pathway_client.camera.get_camera import get_camera
-from pathway_service.object_detector import DetectedObject
 
 
 def start():
@@ -50,8 +47,14 @@ class DetectionProcessor:
     def start(self):
 
         self._fps_obs.subscribe(lambda fps: print(fps), lambda err: print(err))
+
         self._detected_objects_obs.subscribe(
-            lambda positions: print(positions))
+            lambda detected_objects: print(detected_objects)
+        )
+
+        self._detected_objects_obs.subscribe(
+            lambda detected_objects: self._update_lights(detected_objects)
+        )
 
         api_base_url = os.environ.get('API_BASE_URL', 'http://localhost:8000')
 
@@ -74,6 +77,22 @@ class DetectionProcessor:
         image_buffer = io.BytesIO()
         image.save(image_buffer, format='JPEG')
         return image_buffer.getvalue()
+
+    def _update_lights(self, detected_objects: List[DetectedObject]):
+        import board
+        from neopixel import NeoPixel
+
+        leds = NeoPixel(board.D18, 150, auto_write=False)
+        led_count = len(leds)
+        for i in range(led_count):
+            leds[i] = (255, 255, 255)
+
+        for object in detected_objects:
+            index = led_count + round(object.position.x * led_count / 2)
+            for i in range(index - 10, index + 10):
+                leds[i] = (0, 0, 0)
+
+        leds.show()
 
 
 if __name__ == '__main__':
