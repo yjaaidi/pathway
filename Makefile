@@ -14,6 +14,10 @@ setup-raspberry:
 start-client:
 	poetry run start-client
 
+start-client-raspberry:
+	. .venv/bin/activate
+	PYTHONPATH=${PYTHONPATH}:/home/pi/.local/lib/python3.9/site-packages:src src/pathway_client/main.py
+
 start-service:
 	poetry run start-service
 
