@@ -20,7 +20,8 @@ class DetectedObject:
     position: Position
 
     def __post_init__(self):
-        self.position = Position(**self.position)
+        self.position = Position(
+            **self.position) if type(self.position) is dict else self.position
 
 
 class ObjectDetector:
