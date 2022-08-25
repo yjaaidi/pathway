@@ -7,6 +7,7 @@ from typing import List
 
 import requests
 from numpy.typing import NDArray
+from pathway_client.led_strategy import LedStrategy
 from pathway_client.leds.led_controller import Led, LedController
 from pathway_service.object_detector import DetectedObject
 from rx.core.typing import Observable
@@ -30,6 +31,7 @@ class DetectionProcessor:
     _detected_objects_subject = Subject()
     _detected_objects_obs: Observable[List[DetectedObject]]
     _led_controller: LedController
+    _led_strategy: LedStrategy
 
     def __init__(self):
         self._detected_objects_obs = self._detected_objects_subject.pipe(
@@ -42,18 +44,20 @@ class DetectionProcessor:
         )
 
         self._led_controller = get_led_controller()
+        self._led_strategy = LedStrategy(self._led_controller.get_count())
 
         self._api_base_url = os.environ.get(
             'API_BASE_URL', 'http://localhost:8000')
 
     def start(self):
         self._fps_obs.subscribe(
-            lambda fps: logging.debug("FPS: {fps}".format(fps=fps)),
-            lambda error: logging.exception(error)
+            on_next=lambda fps: logging.debug("FPS: {fps}".format(fps=fps)),
+            on_error=lambda error: logging.exception(error)
         )
 
-        self._detected_objects_obs.subscribe(
-            lambda detected_objects: self._update_lights(detected_objects)
+        self._led_strategy.get_leds_obs(self._detected_objects_obs).subscribe(
+            on_next=lambda leds: self._led_controller.set_leds(leds),
+            on_error=lambda error: logging.exception(error)
         )
 
         with get_camera(width=640, height=480) as camera:
@@ -84,18 +88,6 @@ class DetectionProcessor:
             **item) for item in response.json()['items']]
 
         return detected_objects
-
-    def _update_lights(self, detected_objects: List[DetectedObject]):
-        led_count = self._led_controller.get_count()
-        leds = [Led(0, 0, 0) for _ in range(led_count)]
-
-        for object in detected_objects:
-            index = round(led_count / 2) + \
-                round((object.position.x / 100) * (led_count / 2))
-            for i in range(max(0, index - 10), min(index + 10, led_count)):
-                leds[i] = Led(255, 255, 255)
-
-        self._led_controller.set_leds(leds)
 
 
 if __name__ == '__main__':
