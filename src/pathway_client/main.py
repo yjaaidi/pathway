@@ -5,7 +5,7 @@ import os
 from typing import List
 
 import requests
-from numpy import ndarray
+from numpy.typing import NDArray
 from pathway_service.object_detector import DetectedObject
 from PIL import Image
 from rx.core.typing import Observable
@@ -14,6 +14,7 @@ from rx.operators import map as rx_map
 from rx.operators import share
 from rx.subject import Subject
 
+from pathway_client.camera.frame_to_jpg import frame_to_jpg
 from pathway_client.camera.get_camera import get_camera
 
 
@@ -22,6 +23,7 @@ def start():
 
 
 class DetectionProcessor:
+    _api_base_url: str
     _fps_obs: Observable[float]
     _detected_objects_subject = Subject()
     _detected_objects_obs: Observable[List[DetectedObject]]
@@ -36,33 +38,34 @@ class DetectionProcessor:
             rx_map(lambda buffer: len(buffer) / 5),
         )
 
-    def start(self):
+        self._api_base_url = os.environ.get(
+            'API_BASE_URL', 'http://localhost:8000')
 
+    def start(self):
         self._fps_obs.subscribe(lambda fps: print(fps), lambda err: print(err))
 
         self._detected_objects_obs.subscribe(
             lambda detected_objects: self._update_lights(detected_objects)
         )
 
-        api_base_url = os.environ.get('API_BASE_URL', 'http://localhost:8000')
-
         with get_camera(width=640, height=480) as camera:
             while True:
                 frame = camera.read_image()
 
-                image_bytes = self._frame_to_jpg(frame)
-                response = requests.post(
-                    '{api_base_url}/images'.format(api_base_url=api_base_url), files={'image': image_bytes})
-                detected_objects = [DetectedObject(
-                    **item) for item in response.json()['items']]
+                detected_objects = self._detect_objects(frame)
 
                 self._detected_objects_subject.on_next(detected_objects)
 
-    def _frame_to_jpg(self, frame: ndarray) -> bytes:
-        image = Image.fromarray(frame.astype('uint8'), 'RGB')
-        image_buffer = io.BytesIO()
-        image.save(image_buffer, format='JPEG')
-        return image_buffer.getvalue()
+    def _detect_objects(self, frame: NDArray):
+        image_bytes = frame_to_jpg(frame)
+
+        response = requests.post(
+            '{api_base_url}/images'.format(api_base_url=self._api_base_url), files={'image': image_bytes})
+
+        detected_objects = [DetectedObject(
+            **item) for item in response.json()['items']]
+
+        return detected_objects
 
     def _update_lights(self, detected_objects: List[DetectedObject]):
         import board
