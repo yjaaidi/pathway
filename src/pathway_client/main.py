@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-import io
+import logging
 import os
+from time import sleep
 from typing import List
 
 import requests
 from numpy.typing import NDArray
 from pathway_service.object_detector import DetectedObject
-from PIL import Image
 from rx.core.typing import Observable
 from rx.operators import buffer_with_time
 from rx.operators import map as rx_map
@@ -42,7 +42,10 @@ class DetectionProcessor:
             'API_BASE_URL', 'http://localhost:8000')
 
     def start(self):
-        self._fps_obs.subscribe(lambda fps: print(fps), lambda err: print(err))
+        self._fps_obs.subscribe(
+            lambda fps: logging.debug("FPS: {fps}".format(fps=fps)),
+            lambda error: logging.exception(error)
+        )
 
         self._detected_objects_obs.subscribe(
             lambda detected_objects: self._update_lights(detected_objects)
@@ -52,9 +55,19 @@ class DetectionProcessor:
             while True:
                 frame = camera.read_image()
 
-                detected_objects = self._detect_objects(frame)
+                try:
+                    detected_objects = self._detect_objects(frame)
+                    self._detected_objects_subject.on_next(detected_objects)
+                    continue
+                except ConnectionError:
+                    logging.warn(
+                        "Object detection failed: service unreachable.")
+                except Exception as error:
+                    logging.warn("Object detection failed: unknown error.")
+                    logging.exception(error)
 
-                self._detected_objects_subject.on_next(detected_objects)
+                # Wait a sec before trying again.
+                sleep(1)
 
     def _detect_objects(self, frame: NDArray):
         image_bytes = frame_to_jpg(frame)
