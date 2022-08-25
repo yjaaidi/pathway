@@ -19,7 +19,7 @@ class LedController(ABC):
         pass
 
     @abstractmethod
-    def get_length(self) -> int:
+    def get_count(self) -> int:
         pass
 
     @abstractmethod

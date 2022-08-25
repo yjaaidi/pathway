@@ -86,7 +86,7 @@ class DetectionProcessor:
         return detected_objects
 
     def _update_lights(self, detected_objects: List[DetectedObject]):
-        led_count = self._led_controller.get_length()
+        led_count = self._led_controller.get_count()
         leds = [Led(0, 0, 0) for _ in range(led_count)]
 
         for object in detected_objects:

@@ -16,7 +16,7 @@ class NeopixelController(LedController):
     def create() -> LedController:
         return NeopixelController()
 
-    def get_length(self) -> int:
+    def get_count(self) -> int:
         return 150
 
     def set_leds(self, led_list: List[Led]):
