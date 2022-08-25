@@ -63,7 +63,3 @@ def set_up():
     def teardown(): subscription.dispose()
 
     return update_detected_objects, leds_spy, teardown
-
-
-def create_object(x: float, width: float, probability: float = 100) -> DetectedObject:
-    return DetectedObject(type="human", probability=probability, position=Position(x=x, width=width, height=10))
