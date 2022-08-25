@@ -19,6 +19,9 @@ class DetectedObject:
     probability: float
     position: Position
 
+    def __post_init__(self):
+        self.position = Position(**self.position)
+
 
 class ObjectDetector:
     _detector: ImageAiObjectDetection
