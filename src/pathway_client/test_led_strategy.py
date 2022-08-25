@@ -16,10 +16,9 @@ from pathway_client.leds.led_controller import Led
 
 
 def test_turn_on_leds_around_detected_objects():
-    update_detected_objects, leds_spy, tear_down = set_up()
+    set_objs, leds_spy, tear_down = set_up()
 
-    update_detected_objects(
-        "-----------------------------------aaaaaaaaaa---------------------------------------------aaaaaaaaaa")
+    set_objs("-----------------------------------aaaaaaaaaa---------------------------------------------aaaaaaaaaa")
 
     assert leds_spy.call_count == 1
     leds = leds_spy.call_args[0][0]
