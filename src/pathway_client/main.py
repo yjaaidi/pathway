@@ -79,12 +79,12 @@ class DetectionProcessor:
         leds = NeoPixel(board.D18, 150, auto_write=False)
         led_count = len(leds)
         for i in range(led_count):
-            leds[i] = (255, 255, 255)
+            leds[i] = (0, 0, 0)
 
         for object in detected_objects:
             index = led_count + round(object.position.x * led_count / 2)
-            for i in range(index - 10, index + 10):
-                leds[i] = (0, 0, 0)
+            for i in range(max(0, index - 10), min(index + 10, led_count)):
+                leds[i] = (255, 255, 255)
 
         leds.show()
 
