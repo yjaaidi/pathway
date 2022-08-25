@@ -42,10 +42,6 @@ class DetectionProcessor:
         self._fps_obs.subscribe(lambda fps: print(fps), lambda err: print(err))
 
         self._detected_objects_obs.subscribe(
-            lambda detected_objects: print(detected_objects)
-        )
-
-        self._detected_objects_obs.subscribe(
             lambda detected_objects: self._update_lights(detected_objects)
         )
 
@@ -72,6 +68,8 @@ class DetectionProcessor:
     def _update_lights(self, detected_objects: List[DetectedObject]):
         import board
         from neopixel import NeoPixel
+
+        print(detected_objects)
 
         leds = NeoPixel(board.D18, 150, auto_write=False)
         led_count = len(leds)
