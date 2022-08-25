@@ -2,9 +2,8 @@
 
 import io
 import os
-from typing import List, TypedDict
+from typing import List
 
-import cv2  # type: ignore
 import requests
 from numpy import ndarray
 from pathway_service.object_detector import DetectedObject
@@ -56,8 +55,6 @@ class DetectionProcessor:
             while True:
                 frame = camera.read_image()
 
-                cv2.imwrite("dist/last-image.jpg", frame)
-
                 image_bytes = self._frame_to_jpg(frame)
                 response = requests.post(
                     '{api_base_url}/images'.format(api_base_url=api_base_url), files={'image': image_bytes})
@@ -82,7 +79,8 @@ class DetectionProcessor:
             leds[i] = (0, 0, 0)
 
         for object in detected_objects:
-            index = led_count + round(object.position.x * led_count / 2)
+            index = round(led_count / 2) + \
+                round((object.position.x / 100) * (led_count / 2))
             for i in range(max(0, index - 10), min(index + 10, led_count)):
                 leds[i] = (255, 255, 255)
 
