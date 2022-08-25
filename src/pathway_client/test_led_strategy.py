@@ -4,6 +4,7 @@ from audioop import avg
 import re
 from typing import List
 from unittest.mock import Mock
+from pathway_client.leds.terminal_controller import leds_to_ascii
 
 from pathway_shared.detected_object import DetectedObject
 from pathway_shared.position import Position
@@ -23,10 +24,8 @@ def test_turn_on_leds_around_detected_objects():
     assert leds_spy.call_count == 1
     leds = leds_spy.call_args[0][0]
 
-    assert leds[0:35] == [Led(0, 0, 0) for _ in range(0, 35)]
-    assert leds[35:45] == [Led(255, 255, 255) for _ in range(0, 10)]
-    assert leds[45:90] == [Led(0, 0, 0) for _ in range(45)]
-    assert leds[90:100] == [Led(255, 255, 255) for _ in range(0, 10)]
+    assert leds_to_ascii(
+        leds) == "-----------------------------------ffffffffff---------------------------------------------ffffffffff"
 
     tear_down()
 

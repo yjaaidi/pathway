@@ -23,5 +23,5 @@ class LedController(ABC):
         pass
 
     @abstractmethod
-    def set_leds(self, led_list: List[Led]):
+    def set_leds(self, leds: List[Led]):
         pass
