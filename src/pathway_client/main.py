@@ -7,6 +7,7 @@ from typing import List
 
 import requests
 from numpy.typing import NDArray
+from pathway_client.leds.led_controller import Led, LedController
 from pathway_service.object_detector import DetectedObject
 from rx.core.typing import Observable
 from rx.operators import buffer_with_time
@@ -16,6 +17,7 @@ from rx.subject import Subject
 
 from pathway_client.camera.frame_to_jpg import frame_to_jpg
 from pathway_client.camera.get_camera import get_camera
+from pathway_client.leds.get_led_controller import get_led_controller
 
 
 def start():
@@ -27,6 +29,7 @@ class DetectionProcessor:
     _fps_obs: Observable[float]
     _detected_objects_subject = Subject()
     _detected_objects_obs: Observable[List[DetectedObject]]
+    _led_controller: LedController
 
     def __init__(self):
         self._detected_objects_obs = self._detected_objects_subject.pipe(
@@ -37,6 +40,8 @@ class DetectionProcessor:
             buffer_with_time(timespan=5, timeshift=1),
             rx_map(lambda buffer: len(buffer) / 5),
         )
+
+        self._led_controller = get_led_controller()
 
         self._api_base_url = os.environ.get(
             'API_BASE_URL', 'http://localhost:8000')
@@ -81,23 +86,16 @@ class DetectionProcessor:
         return detected_objects
 
     def _update_lights(self, detected_objects: List[DetectedObject]):
-        import board
-        from neopixel import NeoPixel
-
-        print(detected_objects)
-
-        leds = NeoPixel(board.D18, 150, auto_write=False)
-        led_count = len(leds)
-        for i in range(led_count):
-            leds[i] = (0, 0, 0)
+        led_count = self._led_controller.get_length()
+        leds = [Led(0, 0, 0) for _ in range(led_count)]
 
         for object in detected_objects:
             index = round(led_count / 2) + \
                 round((object.position.x / 100) * (led_count / 2))
             for i in range(max(0, index - 10), min(index + 10, led_count)):
-                leds[i] = (255, 255, 255)
+                leds[i] = Led(255, 255, 255)
 
-        leds.show()
+        self._led_controller.set_leds(leds)
 
 
 if __name__ == '__main__':

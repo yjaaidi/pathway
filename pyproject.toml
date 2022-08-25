@@ -5,7 +5,8 @@ description = ""
 authors = ["Younes Jaaidi <yjaaidi@gmail.com>"]
 packages = [
   { include = "pathway_client", from = "src" },
-  { include = "pathway_service", from = "src" }
+  { include = "pathway_service", from = "src" },
+  { include = "pathway_shared", from = "src" }
 ]
 
 [tool.poetry.scripts]
