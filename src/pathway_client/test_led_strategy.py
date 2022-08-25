@@ -16,7 +16,6 @@ from pathway_client.leds.led_controller import Led
 def test_turn_on_leds_around_detected_objects():
     detected_objects_obs, leds_spy, tear_down = set_up()
 
-    # @todo emit two detected objects
     detected_objects_obs.on_next(
         [
             # Kind of in the middle but a bit left.
