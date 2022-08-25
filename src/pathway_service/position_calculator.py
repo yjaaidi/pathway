@@ -12,9 +12,8 @@ class PositionCalculator:
         x1, y1, x2, y2 = box_points
 
         # 1. Compute center (x1 + x2) / 2
-        # 2. Translate to the left (-self.width / 2)
         # 3. Make it a percentage
-        x = round(((x1 + x2 - self.width) / 2) * 100 / (self.width / 2))
+        x = ((x1 + x2) / 2) * 100 / (self.width)
 
         height = round((y2 - y1)/self.height * 100)
         width = round((x2 - x1)/self.width * 100)

@@ -4,11 +4,11 @@ from pathway_service.position_calculator import Position, PositionCalculator
 
 @pytest.mark.parametrize("box_points,expected_position", [
     # Center
-    ((480, 0, 720, 200), Position(x=0, width=20, height=25)),
+    ((480, 0, 720, 200), Position(x=50, width=20, height=25)),
     # Left
-    ((180, 0, 420, 200), Position(x=-50, width=20, height=25)),
+    ((180, 0, 420, 200), Position(x=25, width=20, height=25)),
     # Right
-    ((960, 0, 1200, 200), Position(x=80, width=20, height=25)),
+    ((960, 0, 1200, 200), Position(x=90, width=20, height=25)),
 ])
 def test_compute_position(box_points, expected_position):
     calculator = create_position_calculator()

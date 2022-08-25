@@ -53,7 +53,7 @@ def set_up():
             type="human",
             probability=int(match.group()[0], 16),
             position=Position(
-                x=(match.start() + match.end()) - len(detected_objects_str),
+                x=(match.start() + match.end()) / 2,
                 width=match.end() - match.start(),
                 height=10
             )

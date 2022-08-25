@@ -22,9 +22,7 @@ class LedStrategy:
         leds = [Led(0, 0, 0) for _ in range(self._led_count)]
 
         for detected_object in detected_objects:
-            index = round(self._led_count / 2) + \
-                round((detected_object.position.x / 100)
-                      * (self._led_count / 2))
+            index = round(detected_object.position.x * self._led_count / 100)
 
             width_led_count = round(
                 detected_object.position.width * self._led_count / 100
