@@ -1,11 +1,6 @@
 from dataclasses import dataclass
 
-
-@dataclass
-class Position:
-    x: float
-    width: float
-    height: float
+from pathway_shared.position import Position
 
 
 @dataclass

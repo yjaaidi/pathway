@@ -9,7 +9,6 @@ from numpy import ndarray
 from pathway_service.object_detector import DetectedObject
 from PIL import Image
 from rx.core.typing import Observable
-from rx.core.typing import Subject
 from rx.operators import buffer_with_time
 from rx.operators import map as rx_map
 from rx.operators import share

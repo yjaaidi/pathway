@@ -1,5 +1,4 @@
 import io
-from dataclasses import dataclass
 from os import getcwd
 from os.path import join
 from typing import List
@@ -10,18 +9,9 @@ from PIL import Image
 from pathway_service.imageai.detected_item import ImageAiDetectedItem
 from pathway_service.imageai.detection import \
     ObjectDetection as ImageAiObjectDetection
-from pathway_service.position_calculator import Position, PositionCalculator
+from pathway_service.position_calculator import PositionCalculator
 
-
-@dataclass
-class DetectedObject:
-    type: str
-    probability: float
-    position: Position
-
-    def __post_init__(self):
-        self.position = Position(
-            **self.position) if type(self.position) is dict else self.position
+from pathway_shared.detected_object import DetectedObject
 
 
 class ObjectDetector:

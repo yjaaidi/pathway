@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, status
 
 from pathway_service.object_detector import ObjectDetector
-import uvicorn
+import uvicorn  # type:ignore
 
 app = FastAPI()
 
