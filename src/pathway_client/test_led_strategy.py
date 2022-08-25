@@ -8,7 +8,6 @@ from pathway_client.leds.terminal_controller import leds_to_ascii
 
 from pathway_shared.detected_object import DetectedObject
 from pathway_shared.position import Position
-from pytest import mark
 from rx.core.typing import Subject as SubjectType
 from rx.subject import Subject
 
@@ -19,13 +18,14 @@ from pathway_client.leds.led_controller import Led
 def test_turn_on_leds_around_detected_objects():
     set_objs, leds_spy, tear_down = set_up()
 
-    set_objs("-----------------------------------aaaaaaaaaa---------------------------------------------aaaaaaaaaa")
+    set_objs("-----------------------------------aaaaaaaaaa-----------------------------------aaaaaaaaaaaaaaaaaaaa")
 
     assert leds_spy.call_count == 1
     leds = leds_spy.call_args[0][0]
 
     assert leds_to_ascii(
-        leds) == "-----------------------------------ffffffffff---------------------------------------------ffffffffff"
+        leds
+    ) == "-----------------------------------6cefffffec-----------------------------------6acdeefffffffffeedca"
 
     tear_down()
 
