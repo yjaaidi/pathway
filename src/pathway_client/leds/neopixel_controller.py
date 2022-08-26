@@ -22,4 +22,4 @@ class NeopixelController(LedController):
     def set_leds(self, leds: List[Led]):
         for i, led in enumerate(leds):
             self._neopixel_leds[i] = (led.red, led.green, led.blue)
-            self._neopixel_leds.show()
+        self._neopixel_leds.show()
