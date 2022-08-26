@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, status
 
 from pathway_service.object_detector import ObjectDetector
+import os
 import uvicorn  # type:ignore
 
 app = FastAPI()
@@ -17,7 +18,7 @@ async def processImage(image: bytes = File()):
 
 def start(reload=False):
     uvicorn.run("pathway_service.main:app",
-                host="0.0.0.0", port=8000, reload=reload, workers=4)
+                host="0.0.0.0", port=os.environ.get('PORT', 8000), reload=reload, workers=4)
 
 
 def start_dev():

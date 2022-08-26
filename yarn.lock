@@ -21,6 +21,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pulumi/command@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@pulumi/command@npm:0.4.1"
+  dependencies:
+    "@pulumi/pulumi": ^3.0.0
+  checksum: f9a4997cbccb1fde97d09495cff2d71a1ccf37848073929617b69528cf5ac1cf3726429fb905db5a28df32bb37613a480048ad5be81788977fbed80980cfe8e0
+  languageName: node
+  linkType: hard
+
+"@pulumi/docker@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "@pulumi/docker@npm:3.4.1"
+  dependencies:
+    "@pulumi/pulumi": ^3.0.0
+    semver: ^5.4.0
+  checksum: 3c6c6fd124ab2fcb419634c505f45a7b409e5f7b851a765ca3a0543dbb263fd50163e3a49c6fa75c8a75cf312e10b7d7a32d1f3bbd00a1c7e6e4418acbd5b7fa
+  languageName: node
+  linkType: hard
+
 "@pulumi/gcp@npm:^6.0.0":
   version: 6.35.0
   resolution: "@pulumi/gcp@npm:6.35.0"
@@ -720,6 +739,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "pathway@workspace:."
   dependencies:
+    "@pulumi/command": ^0.4.1
+    "@pulumi/docker": ^3.4.1
     "@pulumi/gcp": ^6.0.0
     "@pulumi/pulumi": ^3.0.0
     "@types/node": ^18
@@ -805,7 +826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:2 || 3 || 4 || 5":
+"semver@npm:2 || 3 || 4 || 5, semver@npm:^5.4.0":
   version: 5.7.1
   resolution: "semver@npm:5.7.1"
   bin:

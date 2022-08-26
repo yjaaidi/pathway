@@ -1,5 +1,45 @@
-import * as pulumi from '@pulumi/pulumi';
+import * as docker from '@pulumi/docker';
 import * as gcp from '@pulumi/gcp';
+import * as pulumi from '@pulumi/pulumi';
+import * as command from '@pulumi/command';
+
+import { join } from 'path';
+
+const rootPath = join(__dirname, '..');
+
+const commitHash = new command.local.Command('commit-hash', {
+  create: 'git rev-parse --short HEAD',
+});
+
+const activateArtifactRepository = new gcp.projects.Service(
+  'artifact-repository',
+  {
+    disableDependentServices: true,
+    service: 'artifactregistry.googleapis.com',
+  }
+);
+
+const artifactRepository = new gcp.artifactregistry.Repository(
+  'pathway',
+  {
+    description: 'Docker repository',
+    format: 'DOCKER',
+    location: 'europe-west1',
+    repositoryId: 'pathway',
+  },
+  {
+    dependsOn: [activateArtifactRepository],
+  }
+);
+
+const pathwayServiceName = 'pathway-service';
+const pathwayServiceImage = new docker.Image(pathwayServiceName, {
+  imageName: pulumi.interpolate`europe-west1-docker.pkg.dev/${gcp.config.project}/${artifactRepository.name}/pathway-service:${commitHash.stdout}`,
+  build: {
+    context: rootPath,
+    dockerfile: join(rootPath, 'src/pathway_service/Dockerfile'),
+  },
+});
 
 const activateCloudRun = new gcp.projects.Service('cloud-run', {
   disableDependentServices: true,
@@ -14,7 +54,13 @@ const pathwayService = new gcp.cloudrun.Service(
       spec: {
         containers: [
           {
-            image: 'gcr.io/cloudrun/hello',
+            image: pathwayServiceImage.imageName,
+            // @todo try this
+            // resources: {
+            //   limits: {
+            //     memory: '4g',
+            //   },
+            // },
           },
         ],
       },
@@ -23,6 +69,7 @@ const pathwayService = new gcp.cloudrun.Service(
       {
         percent: 100,
         latestRevision: true,
+        tag: pulumi.interpolate`commit-${commitHash.stdout}`,
       },
     ],
   },
