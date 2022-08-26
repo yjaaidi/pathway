@@ -18,7 +18,7 @@ async def processImage(image: bytes = File()):
 
 def start(reload=False):
     uvicorn.run("pathway_service.main:app",
-                host="0.0.0.0", port=os.environ.get('PORT', 8000), reload=reload, workers=4)
+                host="0.0.0.0", port=int(os.environ.get('PORT', 8000)), reload=reload, workers=1)
 
 
 def start_dev():

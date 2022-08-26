@@ -34,7 +34,7 @@ const artifactRepository = new gcp.artifactregistry.Repository(
 
 const pathwayServiceName = 'pathway-service';
 const pathwayServiceImage = new docker.Image(pathwayServiceName, {
-  imageName: pulumi.interpolate`europe-west1-docker.pkg.dev/${gcp.config.project}/${artifactRepository.name}/pathway-service:${commitHash.stdout}`,
+  imageName: pulumi.interpolate`${artifactRepository.location}-docker.pkg.dev/${gcp.config.project}/${artifactRepository.name}/pathway-service:${commitHash.stdout}`,
   build: {
     context: rootPath,
     dockerfile: join(rootPath, 'src/pathway_service/Dockerfile'),
@@ -55,12 +55,11 @@ const pathwayService = new gcp.cloudrun.Service(
         containers: [
           {
             image: pathwayServiceImage.imageName,
-            // @todo try this
-            // resources: {
-            //   limits: {
-            //     memory: '4g',
-            //   },
-            // },
+            resources: {
+              limits: {
+                memory: '2G',
+              },
+            },
           },
         ],
       },
@@ -87,7 +86,7 @@ const publicCloudRunPolicy = gcp.organizations.getIAMPolicy({
   ],
 });
 
-new gcp.cloudrun.IamPolicy('publicCloudRunPolicy', {
+new gcp.cloudrun.IamPolicy('public-cloud-run-policy', {
   location: pathwayService.location,
   service: pathwayService.name,
   policyData: publicCloudRunPolicy.then((policy) => policy.policyData),

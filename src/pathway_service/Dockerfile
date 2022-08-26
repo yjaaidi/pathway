@@ -6,6 +6,8 @@ COPY tools/download-models.sh tools/
 RUN tools/download-models.sh
 
 RUN pip install poetry==1.1.15
+RUN poetry config virtualenvs.create true
+RUN poetry config virtualenvs.in-project true
 
 COPY pyproject.toml poetry.lock ./
 COPY src ./src
