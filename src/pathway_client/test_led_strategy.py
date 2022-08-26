@@ -95,7 +95,7 @@ def set_up():
             type="person",
             probability=int(match.group()[0], 16),
             position=Position(
-                x=(match.start() + match.end()) / 2,
+                x=round((match.start() + match.end()) / 2),
                 width=match.end() - match.start(),
                 height=10
             )

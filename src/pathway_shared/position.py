@@ -9,6 +9,6 @@ class Position:
     :param width: width in percentage relative to the width of the image.
     :param height: height in percentage relative to the width of the image.
     """
-    x: float
-    width: float
-    height: float
+    x: int
+    width: int
+    height: int

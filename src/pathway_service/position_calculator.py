@@ -13,7 +13,7 @@ class PositionCalculator:
 
         # 1. Compute center (x1 + x2) / 2
         # 3. Make it a percentage
-        x = ((x1 + x2) / 2) * 100 / (self.width)
+        x = round(((x1 + x2) / 2) * 100 / (self.width))
 
         height = round((y2 - y1)/self.height * 100)
         width = round((x2 - x1)/self.width * 100)
