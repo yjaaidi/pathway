@@ -1,6 +1,5 @@
 
 
-from audioop import avg
 import re
 from typing import List
 from unittest.mock import Mock
@@ -10,13 +9,14 @@ from pathway_shared.detected_object import DetectedObject
 from pathway_shared.position import Position
 from rx.core.typing import Subject as SubjectType
 from rx.subject import Subject
+from rx.testing import TestScheduler
 
 from pathway_client.led_strategy import LedStrategy
-from pathway_client.leds.led_controller import Led
+import pytest
 
 
 def test_turn_on_leds_around_detected_objects():
-    set_objs, leds_spy, tear_down = set_up()
+    set_objs, leds_spy, tear_down, _ = set_up()
 
     set_objs("-----------------------------------aaaaaaaaaa-----------------------------------aaaaaaaaaaaaaaaaaaaa")
 
@@ -30,9 +30,34 @@ def test_turn_on_leds_around_detected_objects():
     tear_down()
 
 
+@pytest.mark.skip("🚧 work in progress")
+def test_change_led_progressively():
+    set_objs, leds_spy, tear_down, advance_by = set_up()
+
+    set_objs("-----------------------------------aaaaaaaaaa-------------------------------------------------------")
+
+    # Wait 500ms and see light fading in
+    advance_by(.5)
+
+    assert leds_spy.call_count == 11
+    assert leds_to_ascii(
+        leds_spy.call_args[0][0]) == "----------------------------------------------------------------------------------------------------"
+    assert leds_to_ascii(
+        leds_spy.call_args[1][0]) == "-----------------------------------1111111111-------------------------------------------------------"
+    assert leds_to_ascii(
+        leds_spy.call_args[2][0]) == "-----------------------------------2222222222-------------------------------------------------------"
+    # @todo the progress here...
+    assert leds_to_ascii(
+        leds_spy.call_args[10][0]) == "-----------------------------------6cefffffec-------------------------------------------------------"
+
+    tear_down()
+
+
 def set_up():
 
-    strategy = LedStrategy(led_count=100)
+    scheduler = TestScheduler()
+
+    strategy = LedStrategy(led_count=100, scheduler=scheduler)
 
     detected_objects_obs: SubjectType[List[DetectedObject]] = Subject()
 
@@ -49,7 +74,7 @@ def set_up():
         """
         matches = list(re.finditer("[1-9a]+", detected_objects_str))
         detected_objects = [DetectedObject(
-            type="human",
+            type="person",
             probability=int(match.group()[0], 16),
             position=Position(
                 x=(match.start() + match.end()) / 2,
@@ -61,4 +86,4 @@ def set_up():
 
     def teardown(): subscription.dispose()
 
-    return update_detected_objects, leds_spy, teardown
+    return update_detected_objects, leds_spy, teardown, scheduler.advance_by

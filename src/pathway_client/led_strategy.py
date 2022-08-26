@@ -3,6 +3,7 @@ import math
 from typing import List
 from rx.operators import map as rx_map
 from rx.core import Observable
+from rx.core.typing import Scheduler
 from pathway_client.leds.led_controller import Led
 from pathway_shared.detected_object import DetectedObject
 
@@ -11,7 +12,7 @@ class LedStrategy:
 
     _led_count: int
 
-    def __init__(self, led_count: int):
+    def __init__(self, led_count: int, scheduler: Scheduler = None):
         self._led_count = led_count
 
     def get_leds_obs(self, detected_objects_obs: Observable):
