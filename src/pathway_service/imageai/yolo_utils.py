@@ -1,10 +1,10 @@
 # source https://github.com/OlafenwaMoses/ImageAI
 
-import cv2
-import numpy as np
-import tensorflow as tf
-from keras import backend as K
-from PIL import Image
+import cv2  # type: ignore
+import numpy as np  # type: ignore
+import tensorflow as tf  # type: ignore
+from keras import backend as K  # type: ignore
+from PIL import Image  # type: ignore
 
 
 def yolo_head(feats, anchors, num_classes, input_shape, calc_loss=False):
