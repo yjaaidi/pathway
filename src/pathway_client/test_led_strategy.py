@@ -16,21 +16,20 @@ import pytest
 
 
 def test_turn_on_leds_around_detected_objects():
-    set_objs, leds_spy, tear_down, _ = set_up()
+    set_objs, leds_spy, tear_down, advance_by = set_up()
 
     set_objs("-----------------------------------aaaaaaaaaa-----------------------------------aaaaaaaaaaaaaaaaaaaa")
 
-    assert leds_spy.call_count == 1
-    leds = leds_spy.call_args[0][0]
+    # Wait 500ms for things to stabilize.
+    advance_by(.5)
 
-    assert leds_to_ascii(
-        leds
-    ) == "-----------------------------------6cefffffec-----------------------------------6acdeefffffffffeedca"
+    # Get last call.
+    leds_ascii = leds_to_ascii(leds_spy.call_args[0][0])
+    assert leds_ascii == "-----------------------------------6cefffffec-----------------------------------6acdeefffffffffeedca"
 
     tear_down()
 
 
-@pytest.mark.skip("🚧 work in progress")
 def test_change_led_progressively():
     set_objs, leds_spy, tear_down, advance_by = set_up()
 
@@ -39,16 +38,36 @@ def test_change_led_progressively():
     # Wait 500ms and see light fading in
     advance_by(.5)
 
-    assert leds_spy.call_count == 11
-    assert leds_to_ascii(
-        leds_spy.call_args[0][0]) == "----------------------------------------------------------------------------------------------------"
-    assert leds_to_ascii(
-        leds_spy.call_args[1][0]) == "-----------------------------------1111111111-------------------------------------------------------"
-    assert leds_to_ascii(
-        leds_spy.call_args[2][0]) == "-----------------------------------2222222222-------------------------------------------------------"
-    # @todo the progress here...
-    assert leds_to_ascii(
-        leds_spy.call_args[10][0]) == "-----------------------------------6cefffffec-------------------------------------------------------"
+    # First call is the seed (initial leds value) which is triggered before even detected_objects start emitting,
+    # then we have an event triggered by detected_changes_obs when we call "set_objs",
+    # and finally, we have a call every 50ms during 500ms, meaning there are 10 additional calls.
+    assert leds_spy.call_count == 12
+
+    leds = leds_to_ascii(leds_spy.call_args_list[0][0][0])
+    assert leds == "----------------------------------------------------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[1][0][0])
+    assert leds == "-----------------------------------1111111111-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[2][0][0])
+    assert leds == "-----------------------------------3333333333-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[3][0][0])
+    assert leds == "-----------------------------------4444444444-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[4][0][0])
+    assert leds == "-----------------------------------6666666666-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[5][0][0])
+    assert leds == "-----------------------------------6777777777-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[6][0][0])
+    assert leds == "-----------------------------------6999999999-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[7][0][0])
+    assert leds == "-----------------------------------6aaaaaaaaa-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[8][0][0])
+    assert leds == "-----------------------------------6ccccccccc-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[9][0][0])
+    assert leds == "-----------------------------------6cdddddddc-------------------------------------------------------"
+    leds = leds_to_ascii(leds_spy.call_args_list[10][0][0])
+    assert leds == "-----------------------------------6cefffffec-------------------------------------------------------"
+    # We are stable and additional calls produce the same result.
+    leds = leds_to_ascii(leds_spy.call_args_list[11][0][0])
+    assert leds == "-----------------------------------6cefffffec-------------------------------------------------------"
 
     tear_down()
 
@@ -61,11 +80,10 @@ def set_up():
 
     detected_objects_obs: SubjectType[List[DetectedObject]] = Subject()
 
-    leds_obs = strategy.get_leds_obs(detected_objects_obs)
-
     leds_spy = Mock()
 
-    subscription = leds_obs.subscribe(on_next=leds_spy)
+    subscription = strategy.get_leds_obs(
+        detected_objects_obs).subscribe(on_next=leds_spy)
 
     def update_detected_objects(detected_objects_str: str):
         """
