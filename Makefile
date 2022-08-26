@@ -16,7 +16,7 @@ start-client:
 
 start-client-raspberry:
 	. .venv/bin/activate
-	PYTHONPATH=${PYTHONPATH}:/home/pi/.local/lib/python3.9/site-packages:src src/pathway_client/main.py
+	API_BASE_URL=https://pathway-service-3654a9b-427qbxqkqq-ew.a.run.app PYTHONPATH=${PYTHONPATH}:/home/pi/.local/lib/python3.9/site-packages:src src/pathway_client/main.py
 
 start-service:
 	poetry run start-service
