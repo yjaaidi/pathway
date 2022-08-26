@@ -1,3 +1,5 @@
 name: pathway
 runtime: nodejs
 description: Pathway lights
+main: pulumi
+stackConfigDir: pulumi
