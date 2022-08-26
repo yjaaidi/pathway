@@ -35,17 +35,10 @@ class LedStrategy:
                 min(central_led_index + round(width_led_count/2), self._led_count)
             )
 
-            # Make light power proportional to object probability.
-            max_power = min(
-                255, round(255 * detected_object.probability / 100 * 2)
-            )
-
             for led_index in led_indexes:
                 distance_from_central_led = abs(led_index - central_led_index)
-
-                # Focus power in the central part of the inlighted zone.
                 power = max(
-                    0, max_power - round(math.exp(10 * distance_from_central_led / width_led_count)))
+                    0, 255 - round(math.exp(10 * distance_from_central_led / width_led_count)))
                 leds[led_index] = Led(power, power, power)
 
         return leds

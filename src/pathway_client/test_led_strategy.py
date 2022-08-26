@@ -30,21 +30,6 @@ def test_turn_on_leds_around_detected_objects():
     tear_down()
 
 
-def test_set_power_proportional_to_probability():
-    set_objs, leds_spy, tear_down = set_up()
-
-    set_objs("-----------------------------------1111111111-------------------------------------------------------")
-
-    assert leds_spy.call_count == 1
-    leds = leds_spy.call_args[0][0]
-
-    assert leds_to_ascii(
-        leds
-    ) == "-------------------------------------1122211--------------------------------------------------------"
-
-    tear_down()
-
-
 def set_up():
 
     strategy = LedStrategy(led_count=100)
@@ -65,8 +50,7 @@ def set_up():
         matches = list(re.finditer("[1-9a]+", detected_objects_str))
         detected_objects = [DetectedObject(
             type="human",
-            # Convert hex char to probability.
-            probability=(int(match.group()[0], 16) / 16) * 100,
+            probability=int(match.group()[0], 16),
             position=Position(
                 x=(match.start() + match.end()) / 2,
                 width=match.end() - match.start(),
