@@ -1,7 +1,7 @@
 
 import math
 from sched import scheduler
-from typing import List
+from typing import List, Optional
 from rx.operators import map
 from rx.core import Observable
 from rx.core.typing import Scheduler
@@ -15,9 +15,9 @@ import rx.operators as ops
 class LedStrategy:
 
     _led_count: int
-    _scheduler: Scheduler | None
+    _scheduler: Optional[Scheduler]
 
-    def __init__(self, led_count: int, scheduler: Scheduler | None = None):
+    def __init__(self, led_count: int, scheduler: Optional[Scheduler] = None):
         """
         :param scheduler: overrides the timer's scheduler. This is useful for testing.
         """
