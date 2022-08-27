@@ -49,6 +49,7 @@ const activateCloudRun = new gcp.projects.Service('cloud-run', {
 const pathwayService = new gcp.cloudrun.Service(
   'pathway-service',
   {
+    /* Cf.  https://github.com/hashicorp/terraform-provider-google/issues/5898 */
     autogenerateRevisionName: true,
     location: 'europe-west1',
     template: {
