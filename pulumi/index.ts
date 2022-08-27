@@ -7,9 +7,9 @@ import { join } from 'path';
 
 const rootPath = join(__dirname, '..');
 
-const commitHash = new command.local.Command('commit-hash', {
-  create: 'git rev-parse --short HEAD',
-});
+const commitHash = command.local.run({
+  command: 'git rev-parse --short HEAD',
+}).then(result => result.stdout);
 
 const activateArtifactRepository = new gcp.projects.Service(
   'artifact-repository',
@@ -34,7 +34,7 @@ const artifactRepository = new gcp.artifactregistry.Repository(
 
 const pathwayServiceName = 'pathway-service';
 const pathwayServiceImage = new docker.Image(pathwayServiceName, {
-  imageName: pulumi.interpolate`${artifactRepository.location}-docker.pkg.dev/${gcp.config.project}/${artifactRepository.name}/pathway-service:${commitHash.stdout}`,
+  imageName: pulumi.interpolate`${artifactRepository.location}-docker.pkg.dev/${gcp.config.project}/${artifactRepository.name}/pathway-service:${commitHash}`,
   build: {
     context: rootPath,
     dockerfile: join(rootPath, 'src/pathway_service/Dockerfile'),
@@ -70,7 +70,7 @@ const pathwayService = new gcp.cloudrun.Service(
       {
         percent: 100,
         latestRevision: true,
-        tag: pulumi.interpolate`commit-${commitHash.stdout}`,
+        tag: pulumi.interpolate`commit-${commitHash}`,
       },
     ],
   },
