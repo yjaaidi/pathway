@@ -49,6 +49,7 @@ const activateCloudRun = new gcp.projects.Service('cloud-run', {
 const pathwayService = new gcp.cloudrun.Service(
   'pathway-service',
   {
+    autogenerateRevisionName: true,
     location: 'europe-west1',
     template: {
       spec: {
