@@ -7,9 +7,11 @@ import { join } from 'path';
 
 const rootPath = join(__dirname, '..');
 
-const commitHash = command.local.run({
-  command: 'git rev-parse --short HEAD',
-}).then(result => result.stdout);
+const commitHash = command.local
+  .run({
+    command: 'git rev-parse --short HEAD',
+  })
+  .then((result) => result.stdout);
 
 const activateArtifactRepository = new gcp.projects.Service(
   'artifact-repository',
@@ -33,6 +35,7 @@ const artifactRepository = new gcp.artifactregistry.Repository(
 );
 
 const pathwayServiceName = 'pathway-service';
+
 const pathwayServiceImage = new docker.Image(pathwayServiceName, {
   imageName: pulumi.interpolate`${artifactRepository.location}-docker.pkg.dev/${gcp.config.project}/${artifactRepository.name}/pathway-service:${commitHash}`,
   build: {
@@ -47,18 +50,21 @@ const activateCloudRun = new gcp.projects.Service('cloud-run', {
 });
 
 const pathwayService = new gcp.cloudrun.Service(
-  'pathway-service',
+  pathwayServiceName,
   {
-    /* Cf.  https://github.com/hashicorp/terraform-provider-google/issues/5898 */
-    autogenerateRevisionName: true,
+    name: pathwayServiceName,
     location: 'europe-west1',
     template: {
+      metadata: {
+        name: pulumi.interpolate`${pathwayServiceName}-${commitHash}`,
+      },
       spec: {
         containers: [
           {
             image: pathwayServiceImage.imageName,
             resources: {
               limits: {
+                cpu: '1000m',
                 memory: '2G',
               },
             },
@@ -70,7 +76,7 @@ const pathwayService = new gcp.cloudrun.Service(
       {
         percent: 100,
         latestRevision: true,
-        tag: pulumi.interpolate`commit-${commitHash}`,
+        tag: pulumi.interpolate`sha-${commitHash}`,
       },
     ],
   },
