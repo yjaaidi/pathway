@@ -41,6 +41,7 @@ const pathwayServiceImage = new docker.Image(pathwayServiceName, {
   build: {
     context: rootPath,
     dockerfile: join(rootPath, 'src/pathway_service/Dockerfile'),
+    extraOptions: ['--quiet'],
   },
 });
 
