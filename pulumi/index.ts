@@ -54,10 +54,8 @@ const pathwayService = new gcp.cloudrun.Service(
   {
     name: pathwayServiceName,
     location: 'europe-west1',
+    autogenerateRevisionName: true,
     template: {
-      metadata: {
-        name: pulumi.interpolate`${pathwayServiceName}-${commitHash}`,
-      },
       spec: {
         containers: [
           {
